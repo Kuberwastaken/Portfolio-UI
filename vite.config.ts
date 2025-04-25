@@ -6,6 +6,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Portfolio-UI/',  // Add this line - should match your repository name
   server: {
     port: process.env.PORT as unknown as number,
     cors: {

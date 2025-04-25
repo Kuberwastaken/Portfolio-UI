@@ -39,12 +39,12 @@ export const helpItems = [
 
 export const appMetadata = {
   name: "TextEdit",
-  version: "1.0",
+  version: "1.0.0",
   creator: {
-    name: "Ryo Lu",
-    url: "https://ryo.lu",
+    name: "Kuber",
+    url: "https://github.com/kuberwastaken",
   },
-  github: "https://github.com/ryokun6/ryos",
+  github: "https://github.com/kuberwastaken/Portfolio-UI",
   icon: "/icons/textedit.png",
 };
 

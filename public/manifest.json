@@ -1,21 +1,25 @@
 {
-  "name": "ryOS",
-  "short_name": "ryOS",
-  "description": "A web-based OS experience, made with Cursor",
-  "start_url": "/",
+  "name": "Portfolio UI",
+  "short_name": "Portfolio UI",
+  "description": "A web-based OS experience portfolio based on System 7",
+  "start_url": "/Portfolio-UI/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#000000",
+  "categories": ["productivity", "portfolio", "os", "retro"],
   "icons": [
     {
-      "src": "/icons/mac-192.png",
+      "src": "/Portfolio-UI/icons/mac-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/icons/mac-512.png",
+      "src": "/Portfolio-UI/icons/mac-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

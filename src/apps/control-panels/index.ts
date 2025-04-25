@@ -26,10 +26,10 @@ export const appMetadata = {
   name: "Control Panels",
   version: "1.0.0",
   creator: {
-    name: "System",
-    url: "https://github.com/ryokun6",
+    name: "Kuber",
+    url: "https://github.com/kuberwastaken",
   },
-  github: "https://github.com/ryokun6/ryos",
+  github: "https://github.com/kuberwastaken/Portfolio-UI",
   icon: "/icons/control-panels/appearance-manager/app.png",
 };
 

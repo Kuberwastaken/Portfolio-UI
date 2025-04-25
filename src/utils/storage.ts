@@ -265,87 +265,15 @@ export interface HistoryEntry {
 
 export const DEFAULT_FAVORITES: Favorite[] = [
   {
-    title: "Apple",
-    url: "https://apple.com",
-    favicon: "https://www.google.com/s2/favicons?domain=apple.com&sz=32",
-    year: "2007",
-  },
-  {
-    title: "HyperCards",
-    url: "https://hcsimulator.com",
-    favicon: "https://www.google.com/s2/favicons?domain=hcsimulator.com&sz=32",
+    title: "Portfolio UI",
+    url: "https://kuberwastaken.github.io/Portfolio-UI/",
+    favicon: "https://github.com/kuberwastaken.png",
     year: "current",
   },
   {
-    title: "Baby Cursor",
-    url: "https://baby-cursor.ryo.lu",
-    favicon: "https://www.google.com/s2/favicons?domain=ryo.lu&sz=32",
-    year: "current",
-  },
-  {
-    title: "Notion",
-    url: "https://notion.com",
-    favicon: "https://www.google.com/s2/favicons?domain=notion.com&sz=32",
-    year: "2050",
-  },
-  {
-    title: "Ryo",
-    url: "https://ryo.lu",
-    favicon: "https://www.google.com/s2/favicons?domain=ryo.lu&sz=32",
-    year: "current",
-  },
-  {
-    title: "Ian",
-    url: "https://shaoruu.io",
-    favicon: "https://www.google.com/s2/favicons?domain=shaoruu.io&sz=32",
-    year: "current",
-  },
-  {
-    title: "Sam",
-    url: "https://www.samuelcatania.com",
-    favicon:
-      "https://www.google.com/s2/favicons?domain=www.samuelcatania.com&sz=32",
-    year: "current",
-  },
-  {
-    title: "Theo",
-    url: "https://tmb.sh",
-    favicon: "https://www.google.com/s2/favicons?domain=tmb.sh&sz=32",
-    year: "current",
-  },
-  {
-    title: "Stephen",
-    url: "https://wustep.me",
-    favicon: "https://www.google.com/s2/favicons?domain=wustep.me&sz=32",
-    year: "current",
-  },
-  {
-    title: "Maya",
-    url: "https://mayabakir.com",
-    favicon: "https://www.google.com/s2/favicons?domain=mayabakir.com&sz=32",
-    year: "current",
-  },
-  {
-    title: "Modi",
-    url: "https://www.akm.io",
-    favicon: "https://www.google.com/s2/favicons?domain=www.akm.io&sz=32",
-    year: "current",
-  },
-  {
-    title: "Andrew",
-    url: "https://www.andrewl.ee",
-    favicon: "https://www.google.com/s2/favicons?domain=www.andrewl.ee&sz=32",
-    year: "current",
-  },  {
-    title: "Lucas",
-    url: "https://www.lucasn.com",
-    favicon: "https://www.google.com/s2/favicons?domain=www.lucasn.com&sz=32",
-    year: "current",
-  },
-  {
-    title: "Frank",
-    url: "https://okfrank.co",
-    favicon: "https://www.google.com/s2/favicons?domain=okfrank.co&sz=32",
+    title: "GitHub",
+    url: "https://github.com/kuberwastaken/Portfolio-UI",
+    favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
     year: "current",
   },
 ];

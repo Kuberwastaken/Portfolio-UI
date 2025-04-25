@@ -1,8 +1,13 @@
 // This is a fallback service worker that gets used if vite-plugin-pwa's service worker isn't registered
 // It provides a basic caching strategy
 
-const CACHE_NAME = "ryos-cache-v1";
-const urlsToCache = ["/", "/index.html", "/src/main.tsx", "/icons/mac.png"];
+const CACHE_NAME = "portfolio-ui-cache-v1";
+const urlsToCache = [
+  "/Portfolio-UI/",
+  "/Portfolio-UI/index.html",
+  "/Portfolio-UI/src/main.tsx",
+  "/Portfolio-UI/icons/mac.png"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

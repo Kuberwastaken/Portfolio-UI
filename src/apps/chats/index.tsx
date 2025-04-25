@@ -22,13 +22,13 @@ export const helpItems = [
 
 export const appMetadata = {
   name: "Chats",
-  version: "1.0",
+  version: "1.0.0",
   creator: {
-    name: "Ryo Lu",
-    url: "https://ryo.lu",
+    name: "Kuber",
+    url: "https://github.com/kuberwastaken",
   },
-  github: "https://github.com/ryokun6/ryos",
-  icon: "/icons/question.png",
+  github: "https://github.com/kuberwastaken/Portfolio-UI",
+  icon: "/icons/internet.png",
 };
 
 export const ChatsApp: BaseApp = {

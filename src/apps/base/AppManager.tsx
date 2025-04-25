@@ -7,6 +7,18 @@ import { AppId, getAppComponent } from "@/config/appRegistry";
 import { useWallpaper } from "@/hooks/useWallpaper";
 import { useAppStore } from "@/stores/useAppStore";
 
+// Update metadata
+export const appMetadata = {
+  name: "Portfolio UI",
+  version: "1.0.0",
+  creator: {
+    name: "Kuber",
+    url: "https://github.com/kuberwastaken",
+  },
+  github: "https://github.com/kuberwastaken/Portfolio-UI",
+  icon: "/icons/mac.png",
+};
+
 interface AppManagerProps {
   apps: BaseApp[];
 }

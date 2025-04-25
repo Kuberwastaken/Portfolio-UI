@@ -23,10 +23,10 @@ export const appMetadata = {
   version: "1.02",
   name: "Internet Explorer",
   creator: {
-    name: "Ryo Lu",
-    url: "https://ryo.lu",
+    name: "Kuber",
+    url: "https://github.com/kuberwastaken",
   },
-  github: "https://github.com/ryokun6/ryos",
+  github: "https://github.com/kuberwastaken/Portfolio-UI",
   icon: "/icons/ie.png",
 };
 

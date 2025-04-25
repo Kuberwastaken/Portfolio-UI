@@ -40,13 +40,13 @@ export const helpItems = [
 ];
 
 export const appMetadata = {
-  name: "MacPaint",
-  version: "1.0.4",
+  name: "Paint",
+  version: "1.0.0",
   creator: {
-    name: "Ryo Lu",
-    url: "https://github.com/ryokun6",
+    name: "Kuber",
+    url: "https://github.com/kuberwastaken",
   },
-  github: "https://github.com/ryokun6/ryos",
+  github: "https://github.com/kuberwastaken/Portfolio-UI",
   icon: "/icons/paint.png",
 };
 

@@ -33,17 +33,17 @@ export const TerminalApp: BaseApp = {
       icon: "🔊",
       title: "Terminal Sounds",
       description:
-        "Terminal makes distinctive sounds for commands, errors, and AI responses. Toggle sounds in the View menu.",
+        "Enable or disable retro typing sounds in Control Panels > Sound.",
     },
   ],
   metadata: {
     name: "Terminal",
-    version: "1.0",
+    version: "1.0.0",
     creator: {
-      name: "ryOS Developer",
-      url: "https://github.com/ryokun6/ryos",
+      name: "Kuber",
+      url: "https://github.com/kuberwastaken",
     },
-    github: "https://github.com/ryokun6/ryos",
+    github: "https://github.com/kuberwastaken/Portfolio-UI",
     icon: "/icons/terminal.png",
   },
 };
