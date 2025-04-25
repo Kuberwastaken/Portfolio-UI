@@ -1,5 +1,6 @@
 import { useSound, Sounds } from "@/hooks/useSound";
 import { useEffect, useState, useRef } from "react";
+import { getAssetPath } from "@/utils/assets";
 
 interface FileIconProps {
   name: string;
@@ -93,11 +94,11 @@ export function FileIcon({
   };
 
   const getIconPath = () => {
-    if (icon) return icon;
-    if (isDirectory) return "/icons/directory.png";
+    if (icon) return getAssetPath(icon);
+    if (isDirectory) return getAssetPath("/icons/directory.png");
     if (name.endsWith(".txt") || name.endsWith(".md"))
-      return "/icons/file-text.png";
-    return "/icons/file.png";
+      return getAssetPath("/icons/file-text.png");
+    return getAssetPath("/icons/file.png");
   };
 
   const sizeClasses = {

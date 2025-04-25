@@ -38,10 +38,10 @@ export default defineConfig({
     },
     sourcemap: false,
     minify: true,
-    assetsDir: 'assets',
+    assetsDir: 'public',
     emptyOutDir: true,
     copyPublicDir: true,
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.svg', '**/*.gif', '**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.otf'],
-  publicDir: 'public'
+  publicDir: path.resolve(__dirname, 'public')
 });

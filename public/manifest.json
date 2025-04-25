@@ -10,13 +10,13 @@
   "categories": ["productivity", "portfolio", "os", "retro"],
   "icons": [
     {
-      "src": "/Portfolio-UI/icons/mac-192.png",
+      "src": "/Portfolio-UI/public/icons/mac-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Portfolio-UI/icons/mac-512.png",
+      "src": "/Portfolio-UI/public/icons/mac-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
