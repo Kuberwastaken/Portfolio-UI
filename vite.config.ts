@@ -5,8 +5,8 @@ import vercel from "vite-plugin-vercel";
 import path from "path";
 
 // https://vite.dev/config/
-export default defineConfig({
-  base: import.meta.env.PROD ? '/Portfolio-UI/' : '/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/Portfolio-UI/' : '/',
   server: {
     port: process.env.PORT as unknown as number,
     cors: {
@@ -44,4 +44,4 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.svg', '**/*.gif', '**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.otf'],
   publicDir: path.resolve(__dirname, 'public')
-});
+}));
