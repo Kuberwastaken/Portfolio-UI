@@ -6,7 +6,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Portfolio-UI/',  // Add this line - should match your repository name
+  base: process.env.GITHUB_ACTIONS ? '/Portfolio-UI/' : '/',
   server: {
     port: process.env.PORT as unknown as number,
     cors: {
@@ -38,5 +38,10 @@ export default defineConfig({
     },
     sourcemap: false,
     minify: true,
+    assetsDir: 'assets',
+    emptyOutDir: true,
+    copyPublicDir: true,
   },
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.svg', '**/*.gif', '**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.otf'],
+  publicDir: 'public'
 });
