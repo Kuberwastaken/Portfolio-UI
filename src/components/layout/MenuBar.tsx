@@ -13,6 +13,7 @@ import {
 import { HelpDialog } from "@/components/dialogs/HelpDialog";
 import { AboutDialog } from "@/components/dialogs/AboutDialog";
 import { useLaunchApp } from "@/hooks/useLaunchApp";
+import { getAssetPath } from "@/utils/assets";
 
 const finderHelpItems = [
   {
@@ -40,7 +41,7 @@ const finderMetadata = {
     url: "https://github.com/ryokun6",
   },
   github: "https://github.com/ryokun6/ryos",
-  icon: "/icons/mac.png",
+  icon: getAssetPath("icons/mac.png"),
 };
 
 interface MenuBarProps {
@@ -260,7 +261,7 @@ function DefaultMenuItems() {
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
           >
             <img
-              src="/icons/documents.png"
+              src={getAssetPath("icons/documents.png")}
               alt=""
               className="w-4 h-4 [image-rendering:pixelated]"
             />
@@ -271,7 +272,7 @@ function DefaultMenuItems() {
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
           >
             <img
-              src="/icons/applications.png"
+              src={getAssetPath("icons/applications.png")}
               alt=""
               className="w-4 h-4 [image-rendering:pixelated]"
             />
@@ -282,7 +283,7 @@ function DefaultMenuItems() {
             className="text-md h-6 px-3 active:bg-gray-900 active:text-white flex items-center gap-2"
           >
             <img
-              src="/icons/trash-empty.png"
+              src={getAssetPath("icons/trash-empty.png")}
               alt=""
               className="w-4 h-4 [image-rendering:pixelated]"
             />

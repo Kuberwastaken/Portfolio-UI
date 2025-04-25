@@ -6,7 +6,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? '/Portfolio-UI/' : '/',
+  base: import.meta.env.PROD ? '/Portfolio-UI/' : '/',
   server: {
     port: process.env.PORT as unknown as number,
     cors: {
