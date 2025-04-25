@@ -1,0 +1,324 @@
+import { useChat, type Message } from "ai/react";
+import { useState, useEffect, useRef } from "react";
+import { useInternetExplorerStore, DEFAULT_TIMELINE } from "@/stores/useInternetExplorerStore";
+import { useAppStore } from "@/stores/useAppStore";
+
+interface UseAiGenerationProps {
+  onLoadingChange?: (isLoading: boolean) => void;
+  customTimeline?: { [year: string]: string };
+}
+
+interface UseAiGenerationReturn {
+  generateFuturisticWebsite: (
+    url: string,
+    year: string,
+    forceRegenerate?: boolean,
+    signal?: AbortSignal,
+    prefetchedTitle?: string | null,
+    currentHtmlContent?: string | null
+  ) => Promise<void>;
+  aiGeneratedHtml: string | null;
+  isAiLoading: boolean;
+  isFetchingWebsiteContent: boolean;
+  stopGeneration: () => void;
+}
+
+export function useAiGeneration({ onLoadingChange, customTimeline = {} }: UseAiGenerationProps = {}): UseAiGenerationReturn {
+  const [aiGeneratedHtml, setAiGeneratedHtml] = useState<string | null>(null);
+  const [isFetchingWebsiteContent, setIsFetchingWebsiteContent] = useState(false);
+  const currentGenerationId = useRef<string | null>(null);
+  const isGenerationComplete = useRef<boolean>(false);
+  const generatingUrlRef = useRef<string | null>(null); // Ref for current URL
+  const generatingYearRef = useRef<string | null>(null); // Ref for current Year
+  
+  // Get the selected AI model from app store
+  const { aiModel } = useAppStore();
+  
+  // Use the Zustand store for caching and updating the store
+  const cacheAiPage = useInternetExplorerStore(state => state.cacheAiPage);
+  const getCachedAiPage = useInternetExplorerStore(state => state.getCachedAiPage);
+  const loadSuccess = useInternetExplorerStore(state => state.loadSuccess);
+  const loadError = useInternetExplorerStore(state => state.loadError);
+  const timelineSettings = useInternetExplorerStore(state => state.timelineSettings);
+
+  // Handler for when AI stream finishes
+  const handleAiFinish = (message: Message) => {
+    // Ensure this finish corresponds to the current generation request
+    if (!currentGenerationId.current || isGenerationComplete.current) return;
+
+    // Extract HTML content from the final message
+    const htmlContent = message.content
+      .replace(/^\s*```(?:html)?\s*\n?|\n?\s*```\s*$/g, "")
+      .trim();
+
+    // Extract title using regex
+    const titleMatch = htmlContent.match(/^<!--\s*TITLE:\s*(.*?)\s*-->/);
+    const parsedTitle = titleMatch ? titleMatch[1].trim() : null;
+
+    // Remove the title comment from the HTML content itself
+    const cleanHtmlContent = htmlContent.replace(/^<!--\s*TITLE:.*?-->\s*\n?/,'');
+
+    // Mark generation as complete
+    isGenerationComplete.current = true;
+
+    // Get URL and Year from refs instead of parsing user message
+    const url = generatingUrlRef.current;
+    const year = generatingYearRef.current;
+
+    if (url && year) {
+        let fallbackTitle = url;
+        try {
+          // Use hostname as a better fallback title
+          fallbackTitle = new URL(url.startsWith("http") ? url : `https://${url}`).hostname;
+        } catch (e) { console.warn("Error parsing URL for fallback title:", e); }
+
+        const favicon = `https://www.google.com/s2/favicons?domain=${new URL(url.startsWith("http") ? url : `https://${url}`).hostname}&sz=32`;
+
+        // Cache the completed HTML and title
+        console.log(`[IE] Caching AI page for ${url} in ${year}`);
+        cacheAiPage(url, year, cleanHtmlContent, parsedTitle || fallbackTitle);
+
+        // Update the store with the final HTML, title, and history info
+        loadSuccess({ 
+          aiGeneratedHtml: cleanHtmlContent, 
+          title: parsedTitle || fallbackTitle, 
+          targetUrl: url, // Use ref value
+          targetYear: year, // Use ref value
+          favicon: favicon, 
+          addToHistory: true 
+        });
+
+        console.log(`[IE] AI generation complete (onFinish), saved to cache and store`);
+    } else {
+      console.error("[IE] Could not retrieve URL/Year from refs in onFinish handler.");
+      // Fallback: Update store with HTML but potentially missing title context
+      loadSuccess({ aiGeneratedHtml: cleanHtmlContent });
+    }
+
+    // Clear the generation ID now that it's processed
+    // currentGenerationId.current = null; // Revisit if needed.
+  };
+
+  const {
+    messages: aiMessages,
+    append: appendAiMessage,
+    isLoading: isAiLoading,
+    setMessages: resetAiMessages,
+    stop,
+  } = useChat({
+    initialMessages: [],
+    onFinish: handleAiFinish,
+    body: {
+      model: aiModel // Pass the selected model to the API
+    },
+    api: "/api/ie-generate", // Point to dedicated IE generation endpoint
+  });
+
+  // Helper to fetch existing website content (readability text via jina.ai)
+  const fetchExistingWebsiteContent = async (targetUrl: string, signal?: AbortSignal): Promise<string | null> => {
+    try {
+      setIsFetchingWebsiteContent(true);
+      
+      // Ensure we always have a protocol for encoding
+      const normalized = targetUrl.startsWith("http") ? targetUrl : `https://${targetUrl}`;
+      // jina.ai provides readable text extraction with permissive CORS
+      // Format: https://r.jina.ai/http://example.com/path
+      const jinaEndpoint = `https://r.jina.ai/http://${normalized.replace(/^https?:\/\//, "")}`;
+
+      const res = await fetch(jinaEndpoint, { signal });
+      if (!res.ok) return null;
+      const text = await res.text();
+      // Return a trimmed version to avoid blowing up the prompt size (max 4k chars)
+      return text.slice(0, 4000);
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('Fetch operation was aborted');
+        return null;
+      }
+      console.warn("Failed to fetch existing website content:", err);
+      return null;
+    } finally {
+      setIsFetchingWebsiteContent(false);
+    }
+  };
+
+  // Function to generate futuristic website content using AI
+  const generateFuturisticWebsite = async (
+    url: string,
+    year: string,
+    forceRegenerate = false,
+    signal?: AbortSignal,
+    prefetchedTitle?: string | null,
+    currentHtmlContent?: string | null
+  ) => {
+    // Generate a unique ID for this generation request
+    const generationId = `${url}-${year}-${Date.now()}`;
+    currentGenerationId.current = generationId;
+    isGenerationComplete.current = false;
+    
+    // Format URL properly *before* using it for cache check or storing in ref
+    const normalizedTargetUrl = url.startsWith("http")
+      ? url
+      : `https://${url}`;
+
+    // Store the intended URL and Year in refs *before* potentially returning early from cache or making AI call
+    generatingUrlRef.current = normalizedTargetUrl;
+    generatingYearRef.current = year;
+
+    // Check cache first unless force regenerating
+    if (!forceRegenerate) {
+      // Use normalizedTargetUrl for cache check
+      const cachedEntry = getCachedAiPage(normalizedTargetUrl, year);
+      if (cachedEntry) {
+        console.log(`[IE] Using cached AI page for ${normalizedTargetUrl} in ${year}`);
+        setAiGeneratedHtml(cachedEntry.html);
+        // Update the store directly when using cached content, including title and history info
+        // Use normalizedTargetUrl here too
+        const favicon = `https://www.google.com/s2/favicons?domain=${new URL(normalizedTargetUrl.startsWith("http") ? normalizedTargetUrl : `https://${normalizedTargetUrl}`).hostname}&sz=32`;
+        loadSuccess({ 
+          aiGeneratedHtml: cachedEntry.html, 
+          title: cachedEntry.title || normalizedTargetUrl, // Use normalized
+          targetUrl: normalizedTargetUrl, // Use normalized
+          targetYear: year, 
+          favicon: favicon, 
+          addToHistory: true 
+        });
+        isGenerationComplete.current = true;
+        return;
+      } else {
+        console.log(`[IE] No cached AI page found for ${normalizedTargetUrl} in ${year}, generating new content`);
+      }
+    }
+
+    // Clear any existing AI-generated content
+    setAiGeneratedHtml(null);
+    
+    // Reset previous AI messages to start a fresh conversation
+    resetAiMessages([]);
+    
+    // Check if the operation was aborted before proceeding
+    if (signal?.aborted) {
+      return;
+    }
+    
+    // Extract domain name for better prompt (use normalized URL)
+    let domainName;
+    try {
+      domainName = new URL(normalizedTargetUrl).hostname;
+    } catch (error) {
+      console.error(`[IE] Error parsing URL for prompt: ${normalizedTargetUrl}`, error);
+      const errorMessage = "Invalid URL format. Please enter a valid website address.";
+      loadError(errorMessage);
+      return;
+    }
+    
+    // Attempt to fetch existing website content ONLY if currentHtmlContent is not provided
+    let existingContent = currentHtmlContent; // Use provided content if available
+    if (!existingContent) {
+      try {
+        existingContent = await fetchExistingWebsiteContent(normalizedTargetUrl, signal);
+      } catch (error) {
+        console.warn(`[IE] Error fetching website content, continuing without it:`, error);
+        // Non-fatal, continue without content
+      }
+    }
+    
+    // Check if the operation was aborted after fetching content
+    if (signal?.aborted || currentGenerationId.current !== generationId) {
+      return;
+    }
+
+    // Get timeline context from store
+    const getTimelineContext = (year: string): string => {
+      // Check for custom timeline first
+      if (customTimeline[year]) {
+        return customTimeline[year];
+      }
+
+      // Fall back to store timeline settings
+      if (timelineSettings[year]) {
+        return timelineSettings[year];
+      }
+
+      // Fall back to default timeline
+      return DEFAULT_TIMELINE[year] || "2020s: Current era. AI assistants. Smart devices. Electric vehicles. Renewable energy. Space tourism. Digital transformation. Remote work. Virtual reality. Genetic medicine.";
+    };
+
+    const timelineContext = getTimelineContext(year);
+    
+    // Create a more inspirational prompt for AI‑generated future designs
+    const prompt = `CONTEXT
+Below are details about the current website and the task:
+
+- Domain: ${domainName}
+- URL: ${normalizedTargetUrl}
+${currentHtmlContent
+  ? `- The HTML content of the *previous* AI-generated page view for year ${year} is provided below:\n'''\n${currentHtmlContent.slice(0, 4000)}\n'''\n` 
+  : existingContent 
+    ? `- A snapshot of the *live* website's readable content (fetched via Jina, truncated to 4,000 characters) is provided below:\n'''\n${existingContent}\n'''\n` 
+    : "- No current website content available for context."
+}
+${prefetchedTitle ? `- Known Title: ${prefetchedTitle}\n` : ""}
+
+It is the year ${year}. Here is the timeline of human civilization leading up to this point:
+
+${Object.entries({ ...DEFAULT_TIMELINE, ...timelineSettings, ...customTimeline })
+  .filter(([y]) => parseInt(y) <= parseInt(year))
+  .sort(([a], [b]) => parseInt(a) - parseInt(b))
+  .map(([y, desc]) => `${y}: ${desc}`)
+  .join('\n')}
+
+${timelineContext}`;
+
+    try {
+      // Final check if operation was aborted before sending to AI
+      if (signal?.aborted || currentGenerationId.current !== generationId) {
+        return;
+      }
+      
+      // Send message to AI - the response will be handled by the useEffect
+      await appendAiMessage({ role: "user", content: prompt });
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('AI generation was aborted');
+        return;
+      }
+      console.error("Failed to generate futuristic website:", error);
+      loadError(`Failed to generate website preview for ${normalizedTargetUrl} in ${year}. ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  // Effect to watch for AI responses and update the *streaming* UI preview
+  useEffect(() => {
+    // Only update the preview, final state is handled by onFinish
+    if (aiMessages.length > 1) {
+      const lastMessage = aiMessages[aiMessages.length - 1];
+      if (lastMessage.role === "assistant") {
+        const htmlContent = lastMessage.content
+          .replace(/^\s*```(?:html)?\s*\n?|\n?\s*```\s*$/g, "")
+          .trim();
+        // Remove title comment for preview
+        const cleanHtmlContent = htmlContent.replace(/^<!--\s*TITLE:.*?-->\s*\n?/,'');
+        // Update local state for streaming display only
+        setAiGeneratedHtml(cleanHtmlContent);
+      }
+    }
+  }, [aiMessages]); // Only depends on messages for streaming updates
+
+  // Effect to notify parent of loading state changes
+  useEffect(() => {
+    onLoadingChange?.(isAiLoading);
+  }, [isAiLoading, onLoadingChange]);
+
+  return {
+    generateFuturisticWebsite,
+    aiGeneratedHtml,
+    isAiLoading,
+    isFetchingWebsiteContent,
+    stopGeneration: () => {
+      stop();
+      // Reset current generation ID to prevent further processing
+      currentGenerationId.current = null;
+    },
+  };
+} 

@@ -1,0 +1,83 @@
+/* Font Face Declarations */
+
+@font-face {
+  font-family: "ChicagoKare";
+  src: url("/fonts/ChicagoKare-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ArkPixel";
+  src: url("/fonts/ark-pixel-zh_tw.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SerenityOS-Emoji";
+  src: url("/fonts/SerenityOS-Emoji.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geneva-12";
+  src: url("/fonts/geneva-12.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AppleGaramond";
+  src: url("/fonts/AppleGaramond.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Monaco";
+  src: url("/fonts/monacottf.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mondwest";
+  src: url("/fonts/Mondwest-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mondwest";
+  src: url("/fonts/Mondwest-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NeueBit";
+  src: url("/fonts/NeueBit-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  font-size: 1.5em;
+}
+
+@font-face {
+  font-family: "NeueBit";
+  src: url("/fonts/NeueBit-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
