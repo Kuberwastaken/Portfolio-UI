@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   vercel: {
-    defaultSupportsResponseStreaming: true,
+    defaultSupportsResponseStreaming: true, 
   },
   build: {
     rollupOptions: {
